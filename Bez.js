@@ -533,10 +533,10 @@ Bez.prototype.convertToDashes = function (options) {
         if (alignDashes) {
             // this method aligns dashes with corners
             // and scales dash|gaps to fit section
-            dashStack = dasher.fittedPatternForLength(section.length, this.isClosedWithSingleSection);
+            dashStack = dasher.alignedPatternForLength(section.length, this.isClosedWithSingleSection);
         } else {
             // this method conserves actual dash|gap lengths
-            dashStack = dasher.patternForLength(section.length);
+            dashStack = dasher.basicPatternForLength(section.length);
         }
 
         // get path points for dash lengths
