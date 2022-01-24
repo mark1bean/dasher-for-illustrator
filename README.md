@@ -1,6 +1,7 @@
 # Dasher
 Script to convert Adobe Illustrator dashed strokes to actual paths.
 
+![Convert Selected Dashed Strokes.js demo animation](quick-demo-anim.gif)
 ---
 ## Why this project?
 Adobe Illustrator does not natively provide this functionality. One can "Outline Path" or "Expand Stroke" which work with dashed strokes, but there is no feature that provides simple open paths for each dash.
