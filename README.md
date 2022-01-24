@@ -37,6 +37,7 @@ Using `convertToDashes` method of `Bez` to convert one path item. No options are
     var bez = new Bez({ pathItem: item });
     bez.convertToDashes();
 ```
+
 <br>
 
 ## Configuration
@@ -49,6 +50,20 @@ The `convertToDashes` method of Bez takes an `options` argument. If it is not su
 | `alignDashes`: | `Boolean` (if true, align dashes to corners and path ends, scaling lengths to fit) | item's stroke dash alignment style |
 | `layer`: | `Layer` to place converted dashes | Place group next to item on same layer |
 | `strokeColor`: | `Swatch` or `Color` to color dashes | item's `strokeColor` property |
+
+<br>Example:
+
+```
+var options = {
+    pattern: [8,2,4,2],
+    alignDashes: true,
+    strokeColor: app.activeDocument.swatches[5]
+}
+
+var item = app.activeDocument.selection[0];
+var bez = new Bez({ pathItem: item });
+bez.convertToDashes(options);
+```
 
 <br>
 
