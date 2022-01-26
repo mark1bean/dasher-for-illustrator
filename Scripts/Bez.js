@@ -56,12 +56,12 @@ function Bez(params) {
 
 
 
-Bez.drawDashes = function (points, doc, group, closed, alignDashes, strokeColor, showPoints) {
-    // note: `points` are BezPoints that are
+Bez.drawDashes = function (points, doc, group, closed, alignDashes, strokeColor, strokeWidth) {
+    // note: `points` is Array of BezPoints that are
     // pre-marked with an `endOfDash` property
     closed = closed || false;
     alignDashes = alignDashes || false;
-    showPoints = showPoints || false;
+    strokeWidth = strokeWidth || 1;
 
     var pointStack = points.slice(),
         dashItems = [];
@@ -90,6 +90,7 @@ Bez.drawDashes = function (points, doc, group, closed, alignDashes, strokeColor,
         item.filled = false;
         item.strokeDashes = [];
         item.strokeColor = strokeColor;
+        item.strokeWidth = strokeWidth;
         item.stroked = true;
 
         dashItems.push(item);
@@ -121,7 +122,7 @@ Bez.drawDashes = function (points, doc, group, closed, alignDashes, strokeColor,
                     drawing = false;
             }
 
-            addPoint(item, p, showPoints);
+            addPoint(item, p);
         }
         item.closed = false;
     }
@@ -293,7 +294,7 @@ Bez.tForLength = function (q, len, k) {
 
 
 
-Bez.prototype.draw = function (strokeColor, showPoints) {
+Bez.prototype.draw = function (strokeColor) {
     // create path item
     var doc = app.activeDocument,
         item = doc.activeLayer.pathItems.add();
@@ -308,12 +309,12 @@ Bez.prototype.draw = function (strokeColor, showPoints) {
             p2 = this.points[s];
         if (s == 1) {
             // add p1 of first segment
-            var _p1 = addPoint(item, p1, showPoints);
+            var _p1 = addPoint(item, p1);
             if (p1.previous != undefined)
                 _p1.leftDirection = p1.previous.rightDirection;
         }
         // add p2
-        _p2 = addPoint(item, p2, showPoints);
+        _p2 = addPoint(item, p2);
     }
     item.closed = this.closed || false;
 
@@ -449,10 +450,11 @@ Bez.prototype.markSectionDivisions = function () {
 
 Bez.prototype.convertToDashes = function (options) {
     /*  options:
-            pattern: array of dash|gap lengths
-            alignDashes: boolean (if true, align dashes to corners)
+            pattern: Array of dash|gap lengths
+            alignDashes: Boolean (if true, align dashes to corners)
             layer: Layer to place dashes
             strokeColor: Swatch or Color to color dashes
+            strokeWidth: Number stroke thickness in pts
 
         Omitted parameters will be derived path item.
     */
@@ -471,6 +473,10 @@ Bez.prototype.convertToDashes = function (options) {
     if (alignDashes == undefined)
         alignDashes = strokeDashesAreAligned(this.pathItem, false);
     this.alignDashes = alignDashes;
+
+    var strokeWidth = options.strokeWidth;
+    if (strokeWidth == undefined)
+        strokeWidth = this.pathItem.strokeWidth;
 
     var strokeColor = options.strokeColor;
     if (strokeColor != undefined) {
@@ -504,7 +510,8 @@ Bez.prototype.convertToDashes = function (options) {
 
     // group to container dashes
     var group = doc.activeLayer.groupItems.add();
-    group.name = '<Dashes>';
+    // group.name = '<Dashes>';
+
     if (options.layer != undefined && options.layer.constructor.name == 'Layer') {
         // add to layer
         group.move(options.layer, ElementPlacement.PLACEATEND);
@@ -549,7 +556,7 @@ Bez.prototype.convertToDashes = function (options) {
     }
 
     // draw the dashes as pathItems
-    var dashItems = Bez.drawDashes(dashPoints, doc, group, this.closed, this.alignDashes, strokeColor, false);
+    var dashItems = Bez.drawDashes(dashPoints, doc, group, this.closed, this.alignDashes, strokeColor, strokeWidth);
 
     this.pathItem.selected = false;
     group.selected = true;
@@ -602,8 +609,8 @@ BezSection.prototype.getDashPoints = function (dashStack, alignDashes) {
     while (pointStack.length > 1) {
 
         // during development only:
-        pointLoopCounter++
-        if (pointLoopCounter > 100) throw 'pointloop exceeded 100 counts';
+        // pointLoopCounter++
+        // if (pointLoopCounter > 100000) throw 'pointloop exceeded 100 counts';
 
         // segment points p1 and p2
         p1 = pointStack.shift();
@@ -621,8 +628,8 @@ BezSection.prototype.getDashPoints = function (dashStack, alignDashes) {
         while (segmentAdvance + dashStack[0] < segmentLength) {
 
             // during development only:
-            dashLoopCounter++;
-            if (dashLoopCounter > 100) throw 'dashloop exceeded 100 counts';
+            // dashLoopCounter++;
+            // if (dashLoopCounter > 100000) throw 'dashloop exceeded 100 counts';
 
             // bezier details
             var q = Bez.getQ(p1, p2),
