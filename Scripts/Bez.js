@@ -56,11 +56,14 @@ function Bez(params) {
 
 
 
-Bez.drawDashes = function (points, doc, group, closed, alignDashes, strokeColor, strokeWidth) {
+Bez.drawDashes = function (points, doc, group, closed, alignDashes, strokeCap, strokeColor, strokeJoin, strokeMiterLimit, strokeWidth) {
     // note: `points` is Array of BezPoints that are
     // pre-marked with an `endOfDash` property
     closed = closed || false;
     alignDashes = alignDashes || false;
+    strokeCap = strokeCap || StrokeCap.BUTTENDCAP;
+    strokeJoin = strokeJoin || StrokeJoin.MITERENDJOIN;
+    strokeMiterLimit = strokeMiterLimit || 4;
     strokeWidth = strokeWidth || 1;
 
     var pointStack = points.slice(),
@@ -89,9 +92,17 @@ Bez.drawDashes = function (points, doc, group, closed, alignDashes, strokeColor,
         var item = doc.activeLayer.pathItems.add();
         item.filled = false;
         item.strokeDashes = [];
-        item.strokeColor = strokeColor;
+        item.strokeCap = strokeCap;
+        item.strokeJoin = strokeJoin;
+        item.strokeMiterLimit = strokeMiterLimit;
         item.strokeWidth = strokeWidth;
-        item.stroked = true;
+
+        if (strokeColor != undefined) {
+            item.stroked = true;
+            item.strokeColor = strokeColor;
+        } else {
+            item.stroked = false;
+        }
 
         dashItems.push(item);
 
@@ -453,10 +464,14 @@ Bez.prototype.convertToDashes = function (options) {
             pattern: Array of dash|gap lengths
             alignDashes: Boolean (if true, align dashes to corners)
             layer: Layer to place dashes
-            strokeColor: Swatch or Color to color dashes
-            strokeWidth: Number stroke thickness in pts
+            strokeCap: StrokeCap type of line capping
+            strokeColor: Swatch or Color or Number to color dashes
+            strokeJoin: StrokeJoin type of joints
+            strokeMiterLimit: Number mitre limit
+            strokeWidth: Number width of stroke in pts
 
-        Omitted parameters will be derived path item.
+        All parameters are optional; if not supplied,
+        script will use path item's own properties.
     */
 
     if (this.pathItem == undefined) return;
@@ -474,9 +489,10 @@ Bez.prototype.convertToDashes = function (options) {
         alignDashes = strokeDashesAreAligned(this.pathItem, false);
     this.alignDashes = alignDashes;
 
-    var strokeWidth = options.strokeWidth;
-    if (strokeWidth == undefined)
-        strokeWidth = this.pathItem.strokeWidth;
+    var strokeCap = options.strokeCap || this.pathItem.strokeCap;
+    var strokeJoin = options.strokeJoin || this.pathItem.strokeJoin;
+    var strokeMiterLimit = options.strokeMiterLimit || this.pathItem.strokeMiterLimit;
+    var strokeWidth = options.strokeWidth || this.pathItem.strokeWidth;
 
     var strokeColor = options.strokeColor;
     if (strokeColor != undefined) {
@@ -556,7 +572,7 @@ Bez.prototype.convertToDashes = function (options) {
     }
 
     // draw the dashes as pathItems
-    var dashItems = Bez.drawDashes(dashPoints, doc, group, this.closed, this.alignDashes, strokeColor, strokeWidth);
+    var dashItems = Bez.drawDashes(dashPoints, doc, group, this.closed, alignDashes, strokeCap, strokeColor, strokeJoin, strokeMiterLimit, strokeWidth);
 
     this.pathItem.selected = false;
     group.selected = true;
@@ -603,14 +619,9 @@ BezSection.prototype.getDashPoints = function (dashStack, alignDashes) {
 
     // the segment's two points
     var p1, p2;
-    var pointLoopCounter = 0;
 
     pointLoop:
     while (pointStack.length > 1) {
-
-        // during development only:
-        // pointLoopCounter++
-        // if (pointLoopCounter > 100000) throw 'pointloop exceeded 100 counts';
 
         // segment points p1 and p2
         p1 = pointStack.shift();
@@ -621,15 +632,9 @@ BezSection.prototype.getDashPoints = function (dashStack, alignDashes) {
         // the position in pts along this path segment
         var segmentAdvance = 0;
 
-        var dashLoopCounter = 0;
-
         // while the dash falls inside this segment
         dashLoop:
         while (segmentAdvance + dashStack[0] < segmentLength) {
-
-            // during development only:
-            // dashLoopCounter++;
-            // if (dashLoopCounter > 100000) throw 'dashloop exceeded 100 counts';
 
             // bezier details
             var q = Bez.getQ(p1, p2),

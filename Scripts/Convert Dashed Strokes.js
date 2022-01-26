@@ -26,12 +26,17 @@ convertSelectedDashedStrokes({ layer: dashesLayer });
 
 function convertSelectedDashedStrokes(options) {
     /*  options same as Bez.convertToDashes:
-            pattern: array of dash|gap lengths
-            alignDashes: boolean (if true, align dashes to corners)
-            layer: layer to place dashes
-            strokeColor: swatch to color dashes
+            pattern: Array of dash|gap lengths
+            alignDashes: Boolean align dashes to corners and path ends
+            layer: Layer to place dashes
+            strokeCap: StrokeCap type of line capping
+            strokeColor: Swatch or Color or Number to color dashes
+            strokeJoin: StrokeJoin type of joints
+            strokeMiterLimit: Number mitre limit
+            strokeWidth: Number width of stroke in pts
 
-        Omit parameters to use each item's own properties.
+        All parameters are optional; if not supplied,
+        script will use path item's own properties.
     */
 
     // get all the pathItems in the selection

@@ -49,7 +49,13 @@ The `convertToDashes` method of Bez takes an `options` argument. If it is not su
 | `pattern`: | `Array` of [dash, gap] lengths | item's `strokeDashes` property |
 | `alignDashes`: | `Boolean` (if true, align dashes to corners and path ends, scaling lengths to fit) | item's stroke dash alignment style |
 | `layer`: | `Layer` to place converted dashes | Place group next to item on same layer |
-| `strokeColor`: | `Swatch` or `Color` to color dashes | item's `strokeColor` property |
+| `strokeCap`: | `StrokeCap` type of line capping | item's `strokeCap` property or `StrokeCap.BUTTENDCAP` |
+| `strokeColor`: | `Swatch` or `Color` to color dashes | item's `strokeColor` property (if no color, dashes won't be stroked) |
+| `strokeJoin`: | `StrokeJoin` type of joints | item's `StrokeJoin` property or `StrokeJoin.MITERENDJOIN` |
+| `strokeMiterLimit`: | `Number` mitre limit | 4 |
+| `strokeWidth`: | `Number` width of stroke in pts | 1 |
+
+
 
 <br>Example:
 
