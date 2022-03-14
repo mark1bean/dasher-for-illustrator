@@ -5,16 +5,9 @@ Script to convert Adobe Illustrator dashed strokes to actual paths.
 
 <br>
 
-## Why this project?
-Adobe Illustrator does not natively provide this functionality. We can "Outline Path" or "Expand Stroke", but there is no feature that provides simple open paths for each dash.
-
-Example usages are cutting machines that require an open path to guide a tool bit or laser.
-
-<br>
-
 ## Installation
 
-Download the [script files](https://github.com/mark1bean/dasher-for-illustrator/releases/latest/download/dasher.zip). The scripts can be stored anywhere on your computer, but you must keep them all together in the same folder so that they can load each other.
+Download the [latest release](https://github.com/mark1bean/dasher-for-illustrator/releases/latest/download/dasher.zip). The scripts can be stored anywhere on your computer, but you must keep them all together in the same folder so that they can load each other.
 
 <br>
 
@@ -82,6 +75,14 @@ Dasher is a tool for generating and manipulating simple numerical patterns in th
 ## What is Bez.js?
 
 Bez is rudimentary class I used to store the bezier path handling functions required by this project, but I may develop it further in other directions if the need arises.
+> `Bez.js` now has it's [own repo](https://github.com/mark1bean/bez-for-illustrator).
+
+<br>
+
+## Why this project?
+Adobe Illustrator does not natively provide this functionality. We can "Outline Path" or "Expand Stroke", but there is no feature that provides simple open paths for each dash.
+
+Example usages are cutting machines that require an open path to guide a tool bit or laser.
 
 <br>
 
