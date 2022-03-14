@@ -14,7 +14,7 @@ Example usages are cutting machines that require an open path to guide a tool bi
 
 ## Installation
 
-Download the [script files](https://github.com/mark1bean/dasher-for-illustrator/archive/master.zip). The scripts can be stored anywhere on your computer, but you must keep them all together in the same folder so that they can load each other.
+Download the [script files](https://github.com/mark1bean/dasher-for-illustrator/releases/latest/download/dasher.zip). The scripts can be stored anywhere on your computer, but you must keep them all together in the same folder so that they can load each other.
 
 <br>
 
