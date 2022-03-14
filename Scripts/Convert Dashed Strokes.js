@@ -1,23 +1,28 @@
-//@include './Bez.js'
-//@include './Dasher.js'
-
 /*
     Convert Selected Dashed Strokes
     For Adobe Illustrator
 
-    Example Script Usage of Bez and Dasher
+    v2022-03-14
 
-    by m1b:
+    by m1b
     https://community.adobe.com/t5/user/viewprofilepage/user-id/13791991
+
+    Function:
+    To convert dashed stroke into actual dashes, ie. to create pathItems
+    corresponding to the visible stroke dashes of selected pathItems.
 
     Usage:
     1. Make selection that includes path items with dashed strokes
     2. Run this script
 
-    Notes:
-    Bez.js and Dasher.js must be in the same folder as this script.
+    Dependencies (keep in same folder as this script):
+    1. Bez.js      path-related logic
+    2. Dasher.js   dash pattern logic
 
 */
+//@include './Bez.js'
+//@include './Dasher.js'
+
 
 
 var dashesLayer = makeLayer('dashes');
@@ -62,7 +67,7 @@ function convertSelectedDashedStrokes(options) {
             for (var j = 0; j < doc.selection.length; j++) {
                 pathItemsToRemove.push(doc.selection[j]);
             }
-            // dasherize and remove duplicate
+            // convert to dashes and remove duplicate
             for (var j = pathItemsToRemove.length - 1; j >= 0; j--) {
                 convertPathItemToDashes(pathItemsToRemove[j], options)
                 pathItemsToRemove[j].remove();
